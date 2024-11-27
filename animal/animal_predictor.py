@@ -8,15 +8,35 @@ import io
 import base64
 from django.shortcuts import render
 import gdown
+import boto3
+import os
+from tensorflow.keras.models import load_model
 
-# ID của file trên Google Drive
-file_id = '1ufiTkLymaZYijB-krQnkQh9gQDLFa8Q4'
+# Cấu hình AWS S3
+s3 = boto3.client('s3')
 
-# Đường dẫn đến file tải về
-output = 'animal_detection_model_weights.h5'
+# Đường dẫn tới thư mục lưu trữ model trong dự án
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, 'models/animal_detection_model_weights.h5')
 
-# Tải file từ Google Drive
-gdown.download(f'https://drive.google.com/uc?export=download&id={file_id}', output, quiet=False)
+# Tên bucket và đường dẫn của mô hình trong S3
+bucket_name = "predictionanimal"  # Bucket name
+model_key = "animal_detection_model_weights.h5"  # Đường dẫn của mô hình trong S3
+
+# Tải mô hình nếu chưa tồn tại trên server
+if not os.path.exists(model_path):
+    print("Downloading model from S3...")
+    
+    try:
+        # Tải mô hình từ S3 về server
+        s3.download_file(bucket_name, model_key, model_path)
+        print("Model downloaded successfully.")
+    except Exception as e:
+        print(f"Error downloading model from S3: {e}")
+
+# Load model từ file đã tải xuống
+model = load_model(model_path)
+
 
 # Khởi tạo lại mô hình và nạp trọng số đã lưu
 

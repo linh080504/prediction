@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-l&xi@7fijuw#jur(#cr8t4zx&9pvjs20do@e$q4pz2h@b*!9lv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['prediction-zmol.onrender.com', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -37,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'animal'
+    'animal',
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [

@@ -201,12 +201,13 @@ def build_model() -> tf.keras.Model:
     )
     return model
 
-def load_model():
-    model = build_model()
-    model.load_weights("animal_detection_model_weights.h5")
+# Load model từ file đã tải xuống
+def load_model(model_path):
+    model = tf.keras.models.load_model(model_path)
     return model
 
-model = load_model()
+# Khởi tạo model từ file đã tải
+model = load_model(model_path)
 class_indices = {'Bear': 0, 'Brown bear': 1, 'Bull': 2, 'Butterfly': 3, 'Camel': 4, 'Canary': 5, 'Caterpillar': 6,
                  'Cattle': 7, 'Centipede': 8, 'Cheetah': 9, 'Chicken': 10, 'Crab': 11, 'Crocodile': 12, 'Deer': 13,
                  'Duck': 14, 'Eagle': 15, 'Elephant': 16, 'Fish': 17, 'Fox': 18, 'Frog': 19, 'Giraffe': 20, 'Goat': 21,

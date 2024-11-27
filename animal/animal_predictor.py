@@ -8,31 +8,26 @@ import io
 import base64
 from django.shortcuts import render
 import gdown
-import boto3
 import os
+import requests
 from tensorflow.keras.models import load_model
-
-# Cấu hình AWS S3
-s3 = boto3.client('s3')
 
 # Đường dẫn tới thư mục lưu trữ model trong dự án
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, 'models/animal_detection_model_weights.h5')
 
-# Tên bucket và đường dẫn của mô hình trong S3
-bucket_name = "predictionanimal"  # Bucket name
-model_key = "animal_detection_model_weights.h5"  # Đường dẫn của mô hình trong S3
+# URL của model trên S3
+model_url = "https://predictionanimal.s3.us-east-1.amazonaws.com/animal_detection_model_weights.h5"  # Đúng URL của mô hình
 
-# Tải mô hình nếu chưa tồn tại trên server
+# Tải model nếu chưa tồn tại trên server
 if not os.path.exists(model_path):
     print("Downloading model from S3...")
-    
-    try:
-        # Tải mô hình từ S3 về server
-        s3.download_file(bucket_name, model_key, model_path)
-        print("Model downloaded successfully.")
-    except Exception as e:
-        print(f"Error downloading model from S3: {e}")
+    response = requests.get(model_url, stream=True)
+    with open(model_path, 'wb') as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+    print("Model downloaded successfully.")
 
 # Load model từ file đã tải xuống
 model = load_model(model_path)

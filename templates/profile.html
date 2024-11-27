@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prediction History</title>
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+</head>
+
+<body class="leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="background-image: url('https://github.com/tailwindtoolbox/Rainblur-Landing-Page/blob/main/header.png?raw=true');">
+  <div class="h-full">
+    <!--Nav-->
+    <div class="w-full container mx-auto">
+      <div class="w-full flex items-center justify-between">
+        <a class="flex items-center text-indigo-400 no-underline hover:no-underline font-bold text-2xl lg:text-4xl" href="#">
+          Rain<span class="bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-pink-500 to-purple-500">blur</span>
+          <br>Hello, <span class="bg-clip-text text-transparent bg-gradient-to-r from-green-400 via-pink-500 to-purple-500">{{ user.username }}</span>
+        </a>
+      </div>
+    </div>
+
+    <!--Main-->
+    <div class="container pt-24 md:pt-36 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+      <div class="flex flex-col w-full xl:w-2/5 justify-center lg:items-start overflow-y-hidden">
+        <h1 class="my-4 text-3xl md:text-5xl text-white opacity-75 font-bold leading-tight text-center md:text-left">
+          Your Prediction History
+        </h1>
+      </div>
+
+      <!-- User Prediction History -->
+      <div class="w-full pt-12">
+        <h2 class="text-2xl font-bold text-white mb-4">Your Uploaded Predictions</h2>
+        {% if user_history %}
+          <table class="min-w-full bg-white rounded-lg overflow-hidden">
+            <thead>
+              <tr class="bg-gray-800 text-white">
+                <th class="py-3 px-6 text-left">Timestamp</th>
+                <th class="py-3 px-6 text-left">Predicted Animal</th>
+                <th class="py-3 px-6 text-left">Confidence</th>
+                <th class="py-3 px-6 text-left">Image</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for prediction in user_history %}
+                <tr class="bg-gray-200 border-b border-gray-400">
+                  <td class="py-3 px-6">{{ prediction.timestamp }}</td>
+                  <td class="py-3 px-6">{{ prediction.animal_type }}</td>
+                  <td class="py-3 px-6">{{ prediction.probability|floatformat:2 }}%</td>
+                  <td class="py-3 px-6">
+                    {% if prediction.image %}
+                      <img src="{{ prediction.image.url }}" alt="Prediction Image" class="w-16 h-16 rounded-md">
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="text-white">You haven't uploaded any predictions yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

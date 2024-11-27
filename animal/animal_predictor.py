@@ -1,9 +1,22 @@
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 import numpy as np
+from django.shortcuts import render
+from django.core.files.storage import default_storage
+import matplotlib.pyplot as plt
+import io
+import base64
+from django.shortcuts import render
+import gdown
 
-# Đường dẫn đến mô hình đã lưu (trên hệ thống của bạn)
-model_path = 'animal_detection_model_weights.h5'
+# ID của file trên Google Drive
+file_id = '1ufiTkLymaZYijB-krQnkQh9gQDLFa8Q4'
+
+# Đường dẫn đến file tải về
+output = 'animal_detection_model_weights.h5'
+
+# Tải file từ Google Drive
+gdown.download(f'https://drive.google.com/uc?export=download&id={file_id}', output, quiet=False)
 
 # Khởi tạo lại mô hình và nạp trọng số đã lưu
 
@@ -43,8 +56,7 @@ def build_model() -> tf.keras.Model:
 
 def load_model():
     model = build_model()
-    # Nạp trọng số từ file mô hình cục bộ
-    model.load_weights(model_path)
+    model.load_weights("animal_detection_model_weights.h5")
     return model
 
 def preprocess_image(img_path, target_size=(600, 600)):
@@ -62,17 +74,14 @@ def predict_animal1(model, img_path):
     class_label = [name for name, idx in class_indices.items() if idx == predicted_class][0]
     return class_label, confidence  # Return both class_label and confidence as a percentage
 
-# Đường dẫn đến mô hình đã lưu (đảm bảo cung cấp đúng đường dẫn)
 model = load_model()
-
-# Chỉ mục các lớp (có thể thay đổi tùy thuộc vào cách bạn đào tạo mô hình)
 class_indices = {
     'Bear': 0, 'Brown bear': 1, 'Bull': 2, 'Butterfly': 3, 'Camel': 4, 'Canary': 5, 'Caterpillar': 6,
     'Cattle': 7, 'Centipede': 8, 'Cheetah': 9, 'Chicken': 10, 'Crab': 11, 'Crocodile': 12, 'Deer': 13,
     'Duck': 14, 'Eagle': 15, 'Elephant': 16, 'Fish': 17, 'Fox': 18, 'Frog': 19, 'Giraffe': 20, 'Goat': 21,
     'Goldfish': 22, 'Goose': 23, 'Hamster': 24, 'Harbor seal': 25, 'Hedgehog': 26, 'Hippopotamus': 27,
     'Horse': 28, 'Jaguar': 29, 'Jellyfish': 30, 'Kangaroo': 31, 'Koala': 32, 'Ladybug': 33, 'Leopard': 34,
-    'Lion': 35, 'Lizard': 36, 'Lynx': 37, 'Magpie': 38, 'Monkey': 39, 'Moths and butterflies': 40,
+'Lion': 35, 'Lizard': 36, 'Lynx': 37, 'Magpie': 38, 'Monkey': 39, 'Moths and butterflies': 40,
     'Mouse': 41, 'Mule': 42, 'Ostrich': 43, 'Otter': 44, 'Owl': 45, 'Panda': 46, 'Parrot': 47,
     'Penguin': 48, 'Pig': 49, 'Polar bear': 50, 'Rabbit': 51, 'Raccoon': 52, 'Raven': 53, 'Red panda': 54,
     'Rhinoceros': 55, 'Scorpion': 56, 'Sea lion': 57, 'Sea turtle': 58, 'Seahorse': 59, 'Shark': 60,
